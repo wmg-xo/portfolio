@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@font-face{font-family:'Karla';src:url('./fonts/karla.woff2') format('woff2-variations');font-weight:200 1000;font-style:normal;font-display:swap}
+@font-face{font-family:'Space Grotesk';src:url('./fonts/space-grotesk.woff2') format('woff2-variations');font-weight:300 700;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('./fonts/jetbrains-mono-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('./fonts/jetbrains-mono-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('./fonts/jetbrains-mono-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+:root{--bg:#f8f7f3;--ink:#17161c;--muted:#6c6879;--card:#fffefb;--line:#e5e1d9;--h:292;--h1:300;--h2:265;--h3:340;--h4:285;--h5:320;--h6:250;--accent:oklch(0.66 0.14 var(--h));--soft:color-mix(in oklab, var(--accent) 15%, var(--bg));--shadow:0 1px 2px rgba(23,22,28,.04),0 12px 32px -12px rgba(23,22,28,.10)}
+[data-theme="dark"]{--bg:#121118;--ink:#f2f0f8;--muted:#9b97ab;--card:#1b1922;--line:#2c2937;--accent:oklch(0.76 0.13 var(--h));--soft:color-mix(in oklab, var(--accent) 20%, var(--bg));--shadow:0 1px 2px rgba(0,0,0,.3),0 16px 40px -16px rgba(0,0,0,.6)}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Karla',system-ui,sans-serif;-webkit-font-smoothing:antialiased;transition:background .5s ease,color .5s ease}
+*{box-sizing:border-box}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--ink)}
+[data-icon-moon]{display:none}
+[data-theme="dark"] [data-icon-moon]{display:block}
+[data-theme="dark"] [data-icon-sun]{display:none}
+[data-lang="en"] [data-de]{display:none !important}
+[data-lang="de"] [data-en]{display:none !important}
+[data-reveal]{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1)}
+[data-reveal="in"]{opacity:1;transform:none}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(3%,-4%) scale(1.08)}100%{transform:translate(0,0) scale(1)}}
+@keyframes b1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(3vw,-7vh) scale(1.06)}}
+@keyframes b2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-4vw,5vh) scale(.94)}}
+@keyframes b3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(2vw,8vh) scale(1.1)}}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-24px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+
+<div ref="{{ bubbleLayer }}" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden">
+  <div style="position:absolute;left:-8vw;top:22vh;width:30vw;height:30vw;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.13;filter:blur(50px);animation:drift 22s ease-in-out infinite"></div>
+  <div style="position:absolute;right:-10vw;top:40vh;width:26vw;height:26vw;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.09;filter:blur(50px);animation:b2 26s ease-in-out infinite"></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:190px;height:190px;border-radius:50%;background:oklch(0.72 0.12 var(--h1) / .16);border:1px solid oklch(0.72 0.12 var(--h1) / .34);backdrop-filter:blur(2px)"></div></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:96px;height:96px;border-radius:50%;background:oklch(0.72 0.12 var(--h2) / .15);border:1px solid oklch(0.72 0.12 var(--h2) / .30);backdrop-filter:blur(2px)"></div></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:58px;height:58px;border-radius:50%;background:oklch(0.72 0.12 var(--h3) / .20);border:1px solid oklch(0.72 0.12 var(--h3) / .40);backdrop-filter:blur(2px)"></div></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:130px;height:130px;border-radius:50%;background:oklch(0.72 0.12 var(--h4) / .12);border:1px solid oklch(0.72 0.12 var(--h4) / .26);backdrop-filter:blur(2px)"></div></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:44px;height:44px;border-radius:50%;background:oklch(0.72 0.12 var(--h5) / .22);border:1px solid oklch(0.72 0.12 var(--h5) / .42);backdrop-filter:blur(2px)"></div></div>
+  <div data-bub="" style="position:absolute;left:0;top:0;will-change:transform"><div data-depth="1" style="width:74px;height:74px;border-radius:50%;background:oklch(0.72 0.12 var(--h6) / .17);border:1px solid oklch(0.72 0.12 var(--h6) / .32);backdrop-filter:blur(2px)"></div></div>
+</div>
+
+<div ref="{{ cursorHint }}" style="position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;background:var(--ink);color:var(--bg);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:0;transform:translate(-50%,-50%) scale(.6);transition:opacity .22s,transform .28s cubic-bezier(.2,.8,.3,1);white-space:nowrap"></div>
+
+<div ref="{{ toastLayer }}" style="position:fixed;left:28px;bottom:28px;z-index:50;display:flex;flex-direction:column-reverse;gap:10px;pointer-events:none">
+  <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 20px 14px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow);animation:toastIn .5s cubic-bezier(.2,.8,.3,1) both">
+      <span style="width:40px;height:40px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--accent)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 4h10v5a5 5 0 0 1-10 0z"></path><path d="M7 5.5H4.5V7a3 3 0 0 0 3 3"></path><path d="M17 5.5h2.5V7a3 3 0 0 1-3 3"></path><line x1="12" y1="14" x2="12" y2="17"></line><line x1="8.5" y1="20" x2="15.5" y2="20"></line><line x1="10" y1="17" x2="14" y2="17"></line></svg>
+      </span>
+      <span style="display:flex;flex-direction:column;gap:3px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)"><span data-en="">Achievement unlocked</span><span data-de="">Erfolg freigeschaltet</span></span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;letter-spacing:-.01em"><span data-en="">{{ t.en }}</span><span data-de="">{{ t.de }}</span></span>
+      </span>
+    </div>
+  </sc-for>
+</div>
+
+<div style="position:fixed;right:28px;bottom:28px;z-index:40;display:flex;flex-direction:column-reverse;align-items:center;gap:10px">
+  <button onClick="{{ togglePalette }}" title="Color scheme" style="width:52px;height:52px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--accent);box-shadow:var(--shadow);cursor:pointer;transition:transform .35s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="transform:rotate(90deg) scale(1.06);border-color:var(--accent)">
+    <svg width="26" height="26" viewBox="0 0 32 32"><circle cx="12" cy="12.5" r="7.5" fill="oklch(0.70 0.14 var(--h1))" opacity=".85"></circle><circle cx="20" cy="12.5" r="7.5" fill="oklch(0.70 0.14 var(--h3))" opacity=".75"></circle><circle cx="16" cy="19.5" r="7.5" fill="oklch(0.70 0.14 var(--h6))" opacity=".75"></circle></svg>
+  </button>
+  <div style="display:flex;flex-direction:column-reverse;gap:8px;transition:opacity .3s,transform .35s cubic-bezier(.2,.8,.3,1);opacity:{{ paletteOpacity }};transform:{{ paletteShift }};pointer-events:{{ palettePointer }}">
+    <sc-for list="{{ schemes }}" as="sc" hint-placeholder-count="3">
+      <button onClick="{{ sc.pick }}" title="{{ sc.name }}" style="width:40px;height:40px;border-radius:999px;border:2px solid {{ sc.ring }};background:{{ sc.dot }};box-shadow:var(--shadow);cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1)" style-hover="transform:scale(1.14)"></button>
+    </sc-for>
+  </div>
+</div>
+
+<div style="position:relative;z-index:1">
+
+<header style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:14px 40px;backdrop-filter:blur(14px);background:color-mix(in oklab, var(--bg) 78%, transparent);border-bottom:1px solid var(--line)">
+  <a href="#top" style="display:flex;align-items:center;gap:10px;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-.02em">
+    <span style="width:12px;height:12px;border-radius:3px;background:var(--accent);animation:blink 3s ease-in-out infinite"></span>
+    W. M. Grubek
+  </a>
+  <nav style="display:flex;align-items:center;gap:6px;font-size:14px">
+    <a href="#work" style="padding:8px 12px;border-radius:8px;color:var(--muted)" style-hover="background:var(--soft);color:var(--ink)"><span data-en="">Games</span><span data-de="">Spiele</span></a>
+    <a href="#agile" style="padding:8px 12px;border-radius:8px;color:var(--muted)" style-hover="background:var(--soft);color:var(--ink)"><span data-en="">Agile PM</span><span data-de="">PM</span></a>
+    <a href="#film" style="padding:8px 12px;border-radius:8px;color:var(--muted)" style-hover="background:var(--soft);color:var(--ink)"><span data-en="">Film</span><span data-de="">Film</span></a>
+    <a href="#contact" style="padding:8px 12px;border-radius:8px;color:var(--muted)" style-hover="background:var(--soft);color:var(--ink)"><span data-en="">Contact</span><span data-de="">Kontakt</span></a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button onClick="{{ toggleLang }}" title="DE / EN" style="display:flex;align-items:center;gap:7px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;transition:transform .2s,border-color .2s" style-hover="border-color:var(--accent);transform:translateY(-1px)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><ellipse cx="12" cy="12" rx="4" ry="9"></ellipse><line x1="3" y1="12" x2="21" y2="12"></line></svg>
+      <span data-en="">EN</span><span data-de="">DE</span>
+    </button>
+    <button onClick="{{ toggleTheme }}" title="Light / Dark" style="display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer;transition:transform .3s,border-color .2s" style-hover="border-color:var(--accent);transform:rotate(35deg)">
+      <svg data-icon-sun="" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.5"></circle><line x1="12" y1="1.5" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22.5"></line><line x1="1.5" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22.5" y2="12"></line><line x1="4.6" y1="4.6" x2="6.4" y2="6.4"></line><line x1="17.6" y1="17.6" x2="19.4" y2="19.4"></line><line x1="4.6" y1="19.4" x2="6.4" y2="17.6"></line><line x1="17.6" y1="6.4" x2="19.4" y2="4.6"></line></svg>
+      <svg data-icon-moon="" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"></path></svg>
+    </button>
+  </div>
+</header>
+
+<section id="top" style="max-width:1180px;margin:0 auto;padding:110px 40px 90px">
+  <div style="display:inline-flex;align-items:center;gap:9px;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">
+    <span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>
+    <span data-en="">Open to work — 2026</span><span data-de="">Offen für Angebote — 2026</span>
+  </div>
+  <h1 data-tilt="" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(44px,7vw,92px);line-height:1.02;letter-spacing:-.035em;margin:26px 0 0;max-width:16ch;text-wrap:pretty">
+    <span data-en=""><span style="font-size: 76.664px;">Hi. I develop games. Nice to meet you!</span></span>
+    <span data-de=""><span style="font-size: 76.664px;">Hi. I develop games. Nice to meet you!</span></span>
+  </h1>
+  <div style="max-width:56ch;margin:26px 0 0;font-size:19px;line-height:1.65;color:var(--muted);text-wrap:pretty"><p data-en="">I like making things, figuring things out and keeping a cool head when everything gets a little messy. With a B.A. in Game Production &amp; Management and experience in games and film, I bring a mix of creative thinking, organization and problem-solving to every project.</p><p data-de="">Ich mag es, Dinge zu erschaffen, Lösungen zu finden und behalte auch dann einen kühlen Kopf, wenn es kompliziert wird. Mit einem B.A. in Game Production &amp; Management und Erfahrung in Games und Film verbinde ich kreatives Denken mit Organisation und pragmatischer Problemlösung.</p></div>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:34px">
+    <a href="#work" data-magnet="" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s" style-hover="box-shadow:0 12px 30px -10px var(--accent);color:#fff">
+      <span data-en="">See the projects</span><span data-de="">Zu den Projekten</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="12" x2="20" y2="12"></line><polyline points="14,6 20,12 14,18"></polyline></svg>
+    </a>
+    <a href="mailto:contact@wiebkegrubek.de" data-magnet="" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="border-color:var(--accent);color:var(--ink)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3,7 12,13 21,7"></polyline></svg>
+      <span data-en="">Get in touch</span><span data-de="">Sag Hallo!</span>
+    </a>
+  </div>
+</section>
+
+<div style="overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card);padding:14px 0">
+  <div style="display:flex;width:max-content;gap:48px;animation:marq 34s linear infinite;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">
+    <span style="display:flex;gap:48px"><span>· Unity</span><span>· Godot Engine</span><span>· Unreal</span><span>· C#</span><span>· Game Design</span><span>· Narrative Design</span><span>· Concept Artist</span><span>· Scrum Master</span><span>· Jira</span><span>· Trello</span><span>· Adobe CC</span><span>· Figma</span><span>· Canva</span><span>· Film Production</span><span>· Office Administration</span></span>
+    <span style="display:flex;gap:48px" aria-hidden="true"><span>· Unity</span><span>· Godot Engine</span><span>· Unreal</span><span>· C#</span><span>· Game Design</span><span>· Narrative Design</span><span>· Concept Artist</span><span>· Scrum Master</span><span>· Jira</span><span>· Trello</span><span>· Adobe CC</span><span>· Figma</span><span>· Canva</span><span>· Film Production</span><span>· Office Administration</span></span>
+  </div>
+</div>
+
+<section id="work" style="max-width:1180px;margin:0 auto;padding:100px 40px 0">
+  <div data-reveal="" style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">01</span>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:600;letter-spacing:-.03em;margin:0"><span data-en="">Game projects</span><span data-de="">Spieleprojekte</span></h2>
+  </div>
+  <p data-reveal="" style="margin:0 0 48px;color:var(--muted);max-width:52ch;font-size:17px"><span data-en="">Two student game projects that actually made it to the finish line and picked up an award or two along the way.</span><span data-de="">Zwei Studentenprojekte, die es tatsächlich bis zur Ziellinie geschafft haben – und dabei auch gleich die ein oder andere Auszeichnung mitgenommen haben.</span></p>
+
+  <article data-reveal="" data-tilt="" style="border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow);overflow:hidden;transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s">
+    <div style="display:grid;grid-template-columns:1fr;gap:0">
+      <div data-cursor="drag" data-cursor-de="ziehen" data-drag="" style="position:relative;overflow:hidden;background:var(--soft);cursor:grab">
+        <div style="display:flex;transition:transform .6s cubic-bezier(.2,.8,.25,1);transform:{{ tdShift }}">
+          <div style="min-width:100%;aspect-ratio:21/9;background:#282828;padding:20px 24px;box-sizing:border-box"><img src="./images/tad-1-title.png" alt="Tears and Dust title screen" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated"></div>
+          <div style="min-width:100%;aspect-ratio:21/9;background:#282828;padding:20px 24px;box-sizing:border-box"><img src="./images/tad-3-hotel.png" alt="Mechanic workshop interior" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated"></div>
+          <div style="min-width:100%;aspect-ratio:21/9;background:#282828;padding:20px 24px;box-sizing:border-box"><img src="./images/tad-2-mechanic.png" alt="Hotel corridor scene" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated"></div>
+          <div style="min-width:100%;aspect-ratio:21/9;background:#282828;padding:20px 24px;box-sizing:border-box"><img src="./images/tad-5-saloon.png" alt="Saloon scene with dialogue" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated"></div>
+          <div style="min-width:100%;aspect-ratio:21/9;background:#282828;padding:20px 24px;box-sizing:border-box"><img src="./images/tad-4-street.png" alt="Main street of the desert town" draggable="false" style="width:100%;height:100%;object-fit:contain;display:block;image-rendering:pixelated"></div>
+        </div>
+        <button onClick="{{ tdPrev }}" style="position:absolute;left:16px;top:50%;margin-top:-20px;width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer;transition:transform .2s" style-hover="transform:translateX(-3px);border-color:var(--accent)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="14,5 7,12 14,19"></polyline></svg>
+        </button>
+        <button onClick="{{ tdNext }}" style="position:absolute;right:16px;top:50%;margin-top:-20px;width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer;transition:transform .2s" style-hover="transform:translateX(3px);border-color:var(--accent)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="10,5 17,12 10,19"></polyline></svg>
+        </button>
+        <div style="position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:8px">
+          <sc-for list="{{ tdDots }}" as="dot" hint-placeholder-count="5">
+            <button onClick="{{ dot.go }}" style="width:26px;height:5px;border:0;border-radius:99px;cursor:pointer;padding:0;transition:background .3s;background:{{ dot.bg }}"></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.25fr .75fr;gap:44px;padding:36px 40px 40px">
+        <div>
+          <h3 style="margin:0 0 18px;line-height:0"><img src="./images/logo-tears-and-dust.png" alt="Tears and Dust" style="display:block;height:38px;width:auto;max-width:100%"></h3>
+          <p style="margin:0;color:var(--muted);font-size:17px;line-height:1.7;text-wrap:pretty">
+            <span data-en="">A 2D pixel-art point-and-click adventure that blends sci-fi with space-western grit, set on a lonely, sun-scorched desert planet. You play as a bounty hunter working through your enemies as well as your own personal demons. I helped write the story, contributed to the pixel art and character concepts, and kept the project’s documentation from spiraling out of control. This game, voted best game of the semester by an external jury during our university’s end-of-semester showcase, ended up taking home a €7,000 grant from the Bavarian Ministry of Education and Cultural Affairs in the process.</span>
+            <span data-de="">Ein 2D-Pixel-Art-Point-and-Click-Adventure zwischen Sci-Fi und Space-Western, angesiedelt auf einem einsamen Wüstenplaneten. Du spielst einen Kopfgeldjäger, der sich durch Gegner (und seine eigenen Dämonen) kämpfen muss. Ich habe an der Story mitgeschrieben, Pixel-Art und Charakterkonzepte beigesteuert und dafür gesorgt, dass die Projektdokumentation nicht im Chaos versinkt. Das Spiel wurde bei der Abschlusspräsentation unserer Hochschule von einer externen Jury zum besten Spiel des Semesters gekürt und sicherte sich dabei eine Förderung von 7.000 € vom Bayerischen Kultusministerium.</span>
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+          <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Role</span><span data-de="">Rolle</span></span><span style="font-weight:600">Narrative Designer, Pixel Artist</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Engine</span><span data-de="">Engine</span></span><span style="font-weight:600">Unity</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Team</span><span data-de="">Team</span></span><span style="font-weight:600;text-align:right">Unbound<br><span style="font-weight:400;color:var(--muted)"><span data-en="">7 people</span><span data-de="">7 Personen</span></span></span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Year</span><span data-de="">Jahr</span></span><span style="font-weight:600;text-align:right">2022</span></div>
+          <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--muted)"><span data-en="">Duration</span><span data-de="">Dauer</span></span><span style="font-weight:600;text-align:right"><span data-en="">5 months</span><span data-de="">5 Monate</span></span></div>
+          <a href="https://unboundhnu.itch.io/tears-and-dust" target="_blank" rel="noopener" data-magnet="" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;padding:13px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s" style-hover="box-shadow:0 12px 30px -10px var(--accent);color:#fff" data-cursor="play" data-cursor-de="spielen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="7,4 20,12 7,20" fill="currentColor" stroke="none"></polygon></svg>
+            <span data-en="">See for yourself</span><span data-de="">Selbst ausprobieren</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article data-reveal="" data-tilt="" style="margin-top:32px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow);overflow:hidden;transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s">
+    <div style="aspect-ratio:16/7;background:#f2e5c8;border-bottom:1px solid var(--line);padding:6px 8px;box-sizing:border-box"><img src="./images/nexus-header.png" alt="Nexus key art" style="width:100%;height:100%;object-fit:contain;display:block"></div>
+    <div style="display:grid;grid-template-columns:1.25fr .75fr;gap:44px;padding:36px 40px 40px">
+      <div>
+        <h3 style="margin:0 0 16px;line-height:0"><img src="./images/logo-nexus.png" alt="Nexus" style="display:block;height:52px;width:auto;max-width:100%"></h3>
+        <p style="margin:0 0 24px;color:var(--muted);font-size:17px;line-height:1.7;text-wrap:pretty">
+          <span data-en="">A learning game built for a Bavarian chemistry classroom, commissioned by a teacher who wanted her 9th and 10th graders to actually understand redox reactions. It runs in two parts: an analog game for the classroom, and a companion app for home, where digital progress unlocks real bonus cards for the tabletop version. An award-winning serious game and currently in talks to roll out statewide. As Product Owner, I kept the vision on track and also helped shape the visual design.</span>
+          <span data-de="">Ein Lernspiel für den bayerischen Chemieunterricht, entwickelt im Auftrag einer Realschullehrerin, um deren 9. und 10. Klassen beim Lernen von Redoxreaktionen zu unterstützen. Das Spiel besteht aus zwei Teilen: einem analogen Spiel fürs Klassenzimmer und einer Begleit-App fürs Zuhause, bei der digitaler Fortschritt echte Bonuskarten fürs Brettspiel freischaltet. Ein preisgekröntes Serious Game – und aktuell im Gespräch für einen landesweiten Einsatz. Als Product Owner habe ich die Vision zusammengehalten und zusätzlich beim visuellen Design mitgewirkt.</span>
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <button onClick="{{ openShot1 }}" style="aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#282828;border:1px solid var(--line);padding:0;cursor:pointer;transition:transform .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="transform:translateY(-4px);border-color:var(--accent)"><img src="./images/nexus-shot-1.png" alt="Nexus box and printed components" style="width:100%;height:100%;object-fit:cover;display:block"></button>
+          <button onClick="{{ openShot2 }}" style="aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#282828;border:1px solid var(--line);padding:0;cursor:pointer;transition:transform .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="transform:translateY(-4px);border-color:var(--accent)"><img src="./images/nexus-shot-2.gif" alt="Nexus companion app in motion" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></button>
+          <button onClick="{{ openShot3 }}" style="aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#282828;border:1px solid var(--line);padding:0;cursor:pointer;transition:transform .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="transform:translateY(-4px);border-color:var(--accent)"><img src="./images/nexus-shot-3.jpg" alt="Nexus exhibited at the mb21 award show" style="width:100%;height:100%;object-fit:cover;display:block"></button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:14px">
+        <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Role</span><span data-de="">Rolle</span></span><span style="font-weight:600">Product Owner, Concept Artist</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Engine</span><span data-de="">Engine</span></span><span style="font-weight:600">Godot Engine</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Team</span><span data-de="">Team</span></span><span style="font-weight:600;text-align:right">Rogue Phoenix Studio<br><span style="font-weight:400;color:var(--muted)"><span data-en="">7 people</span><span data-de="">7 Personen</span></span></span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)"><span style="color:var(--muted)"><span data-en="">Year</span><span data-de="">Jahr</span></span><span style="font-weight:600;text-align:right">2023</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><span style="color:var(--muted)"><span data-en="">Duration</span><span data-de="">Dauer</span></span><span style="font-weight:600;text-align:right"><span data-en="">4 months</span><span data-de="">4 Monate</span></span></div>
+          <a href="https://roguephoenixstudio.itch.io/nexus" target="_blank" rel="noopener" data-magnet="" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;padding:13px 20px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s" style-hover="box-shadow:0 12px 30px -10px var(--accent);color:#fff" data-cursor="play" data-cursor-de="spielen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="7,4 20,12 7,20" fill="currentColor" stroke="none"></polygon></svg>
+            <span data-en="">See for yourself</span><span data-de="">Selbst ausprobieren</span>
+          </a>
+        <div style="margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)">
+          <a href="https://www.mb21.de/wettbewerbsjahr_2023.html?articles=nexus" target="_blank" rel="noopener" data-cursor="play" data-cursor-de="abspielen" style="position:relative;aspect-ratio:16/9;display:block;background:#282828;cursor:pointer">
+            <img src="./images/nexus-header.png" alt="Nexus key art" style="width:100%;height:100%;object-fit:cover;display:block;opacity:.8;transition:opacity .25s" style-hover="opacity:1">
+            <span style="position:absolute;inset:0;display:grid;place-items:center">
+              <span style="width:44px;height:44px;border-radius:999px;display:grid;place-items:center;background:var(--card);color:var(--ink);box-shadow:var(--shadow);transition:color .25s" style-hover="color:var(--accent)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"></polygon></svg>
+              </span>
+            </span>
+          </a>
+          <div style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px">
+            <span data-en="">mb21 — laudatio</span><span data-de="">mb21 — laudatio</span>
+            <a href="https://www.youtube.com/watch?v=Bf9diBB3plM" target="_blank" rel="noopener" style="color:var(--accent);letter-spacing:.1em">youtube ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="extras" style="max-width:1180px;margin:0 auto;padding:56px 40px 0">
+  <div data-reveal="" style="margin-bottom:24px">
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px"><span data-en="">Sketchbook</span><span data-de="">Skizzenbuch</span></h3>
+    <p style="margin:0;color:var(--muted);font-size:15px;max-width:56ch"><span data-en="">Where ideas hang out before they’re ready for the spotlight: game jam builds, concept sketches, digital art and WIPs.</span><span data-de="">Wo meine Ideen verweilen, bevor sie bühnenreif sind: Game-Jam-Builds, Konzeptzeichnungen, Digital Art und WIPs.</span></p>
+  </div>
+  <div data-reveal="" style="display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:150px;gap:14px">
+    <button onClick="{{ openSk1 }}" data-tilt="" style="position:relative;grid-column:span 2;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-1-flappy.gif" alt="Flappy Pegasus" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;image-rendering:pixelated">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Flappy Pegasus · Fun Project</span><span data-de="">Flappy Pegasus · Fun Project</span></span>
+    </button>
+    <button onClick="{{ openSk2 }}" data-tilt="" style="position:relative;grid-column:span 4;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-2-topdown.gif" alt="Top-down shooter prototype" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Top-Down Zombie Shooter · Prototype</span><span data-de="">Top-Down Zombie Shooter · Prototyp</span></span>
+    </button>
+    <button onClick="{{ openSk3 }}" data-tilt="" style="position:relative;grid-column:span 3;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-3-pegasus.gif" alt="Pegasus platformer" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;image-rendering:pixelated">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Pegasus Platformer · 1st time Godot Engine · Game Jam</span><span data-de="">Pegasus Platformer · 1st time Godot Engine · Game Jam</span></span>
+    </button>
+    <button onClick="{{ openSk4 }}" data-tilt="" style="position:relative;grid-column:span 3;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#f6f4ef;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-4-spritesheet.png" alt="Pixel art spritesheet" style="width:100%;height:100%;object-fit:contain;object-position:center;display:block;image-rendering:pixelated">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">spritesheet · pixel art</span><span data-de="">Spritesheet · Pixel Art</span></span>
+    </button>
+    <button onClick="{{ openSk5 }}" data-tilt="" style="position:relative;grid-column:span 2;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#c9c5bd;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-5-conceptart.png" alt="Character concept art" style="width:100%;height:100%;object-fit:contain;object-position:center;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Character Concept Art</span><span data-de="">Character Concept Art</span></span>
+    </button>
+    <button onClick="{{ openSk6 }}" data-tilt="" style="position:relative;grid-column:span 2;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-6-moodpainting.png" alt="Pelagius Quest mood painting" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">pelagius quest · mood painting</span><span data-de="">Pelagius Quest · Mood Painting</span></span>
+    </button>
+    <button onClick="{{ openSk7 }}" data-tilt="" style="position:relative;grid-column:span 2;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#f6f4ef;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-7-bootstrap.jpg" alt="Bootstrap board game prototype" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Agile PM Board Game · Bachelor Thesis</span><span data-de="">Agile PM Board Game · Bachelorarbeit</span></span>
+    </button>
+    <button onClick="{{ openSk8 }}" data-tilt="" style="position:relative;grid-column:span 3;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-8-vogglenauts.png" alt="Vogglenauts island level" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">Vogglenauts · Cozy Eco Co-op · Game Jam</span><span data-de="">Vogglenauts · Cozy Eco Co-op · Game Jam</span></span>
+    </button>
+    <button onClick="{{ openSk9 }}" data-tilt="" style="position:relative;grid-column:span 3;grid-row:span 2;border-radius:18px;border:1px solid var(--line);background:#282828;padding:0;overflow:hidden;cursor:pointer;transition:transform .3s cubic-bezier(.2,.8,.3,1),border-color .3s" data-cursor="view" data-cursor-de="ansehen" style-hover="border-color:var(--accent)">
+      <img src="./images/sk-9-strategy.png" alt="Real-time strategy town" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">
+      <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 14px 11px;background:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.72));color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left"><span data-en="">real-time strategy · game jam</span><span data-de="">Echtzeit-Strategie · Game Jam</span></span>
+    </button>
+  </div>
+</section>
+
+<section id="awards" style="max-width:1180px;margin:0 auto;padding:56px 40px 0">
+  <div data-reveal="" data-tilt="" style="display:grid;grid-template-columns:1fr .9fr;gap:48px;align-items:center;padding:38px 40px;border:1px solid var(--line);border-radius:24px;background:var(--card);box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.2,.8,.3,1)">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:9px;padding:6px 12px;border-radius:999px;background:var(--soft);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="9" r="6"></circle><polyline points="8.5,14.5 7,22 12,19.5 17,22 15.5,14.5"></polyline></svg>
+        <span data-en="">Awarded</span><span data-de="">Ausgezeichnet</span>
+      </div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,3.2vw,36px);font-weight:600;letter-spacing:-.03em;margin:0 0 14px;text-wrap:pretty"><span data-en="">Award-winning game development.</span><span data-de="">Preisgekröntes Game Development.</span></h2>
+      <p style="margin:0;color:var(--muted);font-size:17px;line-height:1.65;max-width:46ch"><span data-en="">Two games, two first places at Kickstart, my university’s end-of-semester showcase, where all our games are judged by external game dev faculty who don’t have to be nice about it. Nexus then went one further, qualifying for mb21 (Germany’s nationwide award for digital and interactive media by creators under 25) and taking the win in its age group.</span><span data-de="">Zwei Spiele, zwei erste Plätze beim Kickstart, unserem hochschulinternen Semester-Showcase, bei dem unsere Games von Game-Dev-Dozenten anderer Unis bewertet werden, die es nicht nötig haben, nett zu sein. Nexus hat danach noch eine Schippe draufgelegt: eine Qualifikation für den Deutschen Multimediapreis mb21, bei dem wir in unserer Altersgruppe auch ausgezeichnet wurden.</span></p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <button onClick="{{ openCert1 }}" style="border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:0;overflow:hidden;text-align:left;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" data-cursor="view" data-cursor-de="ansehen" style-hover="transform:translateY(-5px);border-color:var(--accent)">
+        <span style="display:block;aspect-ratio:5/7;background:#f6f4ef"><img src="./images/cert-kickstart.png" alt="Kickstart certificate for Tears and Dust" style="width:100%;height:100%;object-fit:cover;display:block"></span>
+        <span style="display:block;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)"><span data-en="">kickstart · tears and dust</span><span data-de="">Kickstart · Tears and Dust</span></span>
+      </button>
+      <button onClick="{{ openCert2 }}" style="border:1px solid var(--line);border-radius:14px;background:var(--bg);padding:0;overflow:hidden;text-align:left;cursor:pointer;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" data-cursor="view" data-cursor-de="ansehen" style-hover="transform:translateY(-5px);border-color:var(--accent)">
+        <span style="display:block;aspect-ratio:5/7;background:#f6f4ef"><img src="./images/cert-mb21.jpg" alt="mb21 certificate for Nexus" style="width:100%;height:100%;object-fit:cover;display:block"></span>
+        <span style="display:block;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)"><span data-en="">mb21 · nexus</span><span data-de="">mb21 · Nexus</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="agile" style="max-width:1180px;margin:0 auto;padding:100px 40px 0">
+  <div data-reveal="" style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">02</span>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:600;letter-spacing:-.03em;margin:0"><span data-en="">(Agile) Project Management</span><span data-de="">(Agiles) Projektmanagement</span></h2>
+  </div>
+  <p data-reveal="" style="margin:0 0 44px;color:var(--muted);max-width:56ch;font-size:17px"><span data-en="">A focus of my degree, and the part of production I would happily do full time.</span><span data-de="">Ein Schwerpunkt meines Studiums und etwas, das ich gerne in Vollzeit machen würde.</span></p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+    <div data-reveal="" data-tilt="" style="padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.2,.8,.3,1)">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div style="flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--accent)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6"></path><path d="M10 21.5h4"></path><path d="M12 2.5a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2h5c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 2.5z"></path></svg>
+        </div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em"><span data-en="">The Theory</span><span data-de="">Die Theorie</span></h3>
+      </div>
+      <p style="margin:0;color:var(--muted);font-size:15px;line-height:1.65"><span data-en="">Agile project management was a core focus of my degree, so — at least on paper — I’ve got the fundamentals nailed down. My Bachelor’s thesis went even further, sitting at the intersection of game-based learning and agile methodology: designing a serious game to teach agile PM methods in game development higher education.</span><span data-de="">Agiles Projektmanagement war ein zentraler Bestandteil meines Studiums, die Grundlagen sitzen also – zumindest auf dem Papier. Meine Bachelorarbeit knüpfte daran an und beschäftigte sich mit der Schnittstelle von Game-Based Learning und agiler Methodik: Die Entwicklung eines spielbasierten Ansatzes, um agile PM-Methoden in der Game-Dev Hochschuldidaktik zu vermitteln.</span></p>
+    </div>
+    <div data-reveal="" data-tilt="" style="padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.2,.8,.3,1)">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div style="flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--accent)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2.5c3 2.2 4.8 5.7 4.8 9.4L14.6 16H9.4l-2.2-4.1C7.2 8.2 9 4.7 12 2.5z"></path><circle cx="12" cy="10" r="1.8"></circle><path d="M9.4 16l-1.9 3.4 3.1-.9M14.6 16l1.9 3.4-3.1-.9"></path></svg>
+        </div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em"><span data-en="">The Prototype</span><span data-de="">Der Prototyp</span></h3>
+      </div>
+      <p style="margin:0;color:var(--muted);font-size:15px;line-height:1.65"><span data-en="">As Product Owner on Nexus, I turned a teacher’s classroom wish list into a shippable product: owning the vision, prioritizing the backlog, and keeping a real external client aligned with what the team could actually deliver. And with great success at that, too 😉</span><span data-de="">Als Product Owner bei Nexus habe ich die verschiedenen Wünsche und Anforderungen einer Chemie-Lehrerin in ein fertiges Produkt verwandelt – mit Verantwortung für die Vision, Priorisierung des Backlogs und laufender Abstimmung mit einer echten externen Auftraggeberin über das, was das Team tatsächlich liefern konnte. Mit vollem Erfolg sogar 😉</span></p>
+    </div>
+    <div data-reveal="" data-tilt="" style="padding:30px;border:1px solid var(--line);border-radius:20px;background:var(--card);box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.2,.8,.3,1)">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div style="flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--accent)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><line x1="6" y1="21" x2="6" y2="3"></line><path d="M6 4h10.5l-2.2 3.6L16.5 11H6z"></path><path d="M2 21c3.5-4 6.5-6 10-6s7 2 10 6"></path></svg>
+        </div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin:0;letter-spacing:-.01em"><span data-en="">The Head Start</span><span data-de="">Der Vorsprung</span></h3>
+      </div>
+      <p style="margin:0;color:var(--muted);font-size:15px;line-height:1.65"><span data-en="">My hands-on PM experience is still growing… but a stint in a professional production office on an international film set gave me a serious head start: coordinating schedules, documentation, and communication with external partners. A toolkit I’m excited to keep building on.</span><span data-de="">Praktische PM-Erfahrung sammle ich zwar noch… aber durch meine bisherige Erfahrung im Produktionsbüro einer internationalen Filmproduktion hat mir schon einen ordentlichen Vorsprung verschafft: Zeitpläne koordinieren, Dokumentation und Kommunikation mit externen Partnern. Solides Grundwissen, das ich gerne weiter ausbaue.</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="film" style="margin-top:110px;border-top:1px solid var(--line);background:var(--card)">
+  <div style="max-width:1180px;margin:0 auto;padding:90px 40px">
+    <div data-reveal="" style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">03</span>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,44px);font-weight:600;letter-spacing:-.03em;margin:0"><span data-en="">Before all this: movies</span><span data-de="">Davor: Film</span></h2>
+    </div>
+    <p data-reveal="" style="margin:0 0 40px;color:var(--muted);max-width:56ch;font-size:17px"><span data-en="">Before switching to games, I spent a few years in the film industry — working on international productions at Studio Babelsberg. I picked up more than I expected there, then decided it was time to hit the books again.</span><span data-de="">Bevor ich in die Games-Branche gewechselt bin, habe ich einige Zeit im Studio Babelsberg verbracht und dort an ein paar internationalen Filmproduktionen mitgewirkt. Ich habe dort sehr viel erleben und mitnehmen können, habe mich dann aber entschieden, doch nochmal die Schulbank zu drücken.</span></p>
+    <div style="display:flex;flex-direction:column;border-top:1px solid var(--line)">
+      <div data-reveal="" style="display:grid;grid-template-columns:60px 1fr 200px;align-items:center;gap:24px;padding:26px 8px;border-bottom:1px solid var(--line);transition:padding .3s,background .3s" style-hover="padding-left:20px;background:var(--soft)">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)">2020</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:500;letter-spacing:-.02em">Matrix Resurrections</span>
+        <span style="font-size:14px;color:var(--muted)">Office Production Assistant</span>
+      </div>
+      <div data-reveal="" style="display:grid;grid-template-columns:60px 1fr 200px;align-items:center;gap:24px;padding:26px 8px;border-bottom:1px solid var(--line);transition:padding .3s,background .3s" style-hover="padding-left:20px;background:var(--soft)">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)">2021</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:500;letter-spacing:-.02em">Inventing Anna</span>
+        <span style="font-size:14px;color:var(--muted)">Office Production Assistant</span>
+      </div>
+      <div data-reveal="" style="display:grid;grid-template-columns:60px 1fr 200px;align-items:center;gap:24px;padding:26px 8px;border-bottom:1px solid var(--line);transition:padding .3s,background .3s" style-hover="padding-left:20px;background:var(--soft)">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)">2021</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:500;letter-spacing:-.02em">The Last Voyage of the Demeter</span>
+        <span style="font-size:14px;color:var(--muted)">Assistant Accountant</span>
+      </div>
+    </div>
+    <a href="https://www.imdb.com/de/name/nm12282222/" target="_blank" rel="noopener" data-magnet="" style="display:inline-flex;align-items:center;gap:10px;margin-top:32px;padding:13px 20px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="border-color:var(--accent);color:var(--ink)">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="5" width="19" height="14" rx="3"></rect><line x1="7" y1="9.5" x2="7" y2="14.5"></line><line x1="11" y1="9.5" x2="11" y2="14.5"></line><line x1="15.5" y1="9.5" x2="15.5" y2="14.5"></line></svg>
+      <span data-en="">View my IMDb profile</span><span data-de="">Mein IMDb-Profil ansehen</span>
+    </a>
+  </div>
+</section>
+
+
+<section id="contact" style="max-width:1180px;margin:0 auto;padding:100px 40px 40px">
+  <div data-reveal="" style="border:1px solid var(--line);border-radius:28px;background:var(--card);box-shadow:var(--shadow);padding:60px;display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center">
+    <div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)">04</span>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,4vw,48px);font-weight:600;letter-spacing:-.03em;margin:10px 0 16px;text-wrap:pretty">To be continued.</h2>
+      <p style="margin:0;color:var(--muted);font-size:17px;line-height:1.65;max-width:44ch"><span data-en="">Open to (junior) roles in games, production, design, or wherever these worlds overlap. Currently based in Germany but happy to relocate worldwide! Think I might be a good fit for you? Shoot me a message!</span><span data-de="">Offen für Jobs in den Bereichen Games, Produktion, Design oder überall dort, wo sich diese überschneiden. Aktuell in Deutschland, aber ich bin weltweit flexibel 😉 Denkst du, wir könnten ein gutes Match sein? Schick mir gerne eine Nachricht!</span></p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px">
+        <a href="mailto:contact@wiebkegrubek.de" data-magnet="" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s" style-hover="box-shadow:0 12px 30px -10px var(--accent);color:#fff">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3,7 12,13 21,7"></polyline></svg>
+          contact@wiebkegrubek.de
+        </a>
+        <a href="./files/CV-W-M-Grubek.pdf" download="" target="_blank" rel="noopener" data-magnet="" style="display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:15px;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="border-color:var(--accent);color:var(--ink)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"></path><polyline points="13,3 13,9 19,9"></polyline></svg>
+          <span data-en="">Download CV</span><span data-de="">Lebenslauf</span>
+        </a>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="#" style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border:1px solid var(--line);border-radius:16px;color:var(--ink);font-weight:500;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="transform:translateX(6px);border-color:var(--accent);color:var(--ink)">LinkedIn<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="color:var(--accent)"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="9,7 17,7 17,15"></polyline></svg></a>
+      <a href="https://wmgxo.itch.io/" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border:1px solid var(--line);border-radius:16px;color:var(--ink);font-weight:500;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="transform:translateX(6px);border-color:var(--accent);color:var(--ink)">itch.io<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="color:var(--accent)"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="9,7 17,7 17,15"></polyline></svg></a>
+      
+      <a href="https://www.imdb.com/de/name/nm12282222/" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border:1px solid var(--line);border-radius:16px;color:var(--ink);font-weight:500;transition:transform .25s cubic-bezier(.2,.8,.3,1),border-color .25s" style-hover="transform:translateX(6px);border-color:var(--accent);color:var(--ink)">IMDb<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="color:var(--accent)"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="9,7 17,7 17,15"></polyline></svg></a>
+    </div>
+  </div>
+  <footer style="display:flex;justify-content:space-between;gap:20px;padding:40px 4px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">
+    <span>© 2026 W. M. Grubek</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button onClick="{{ openLegal }}" style="appearance:none;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--muted);cursor:pointer;transition:color .25s" style-hover="color:var(--accent)">Impressum</button>
+      <span style="opacity:.5">·</span>
+      <button onClick="{{ openLegal }}" style="appearance:none;border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--muted);cursor:pointer;transition:color .25s" style-hover="color:var(--accent)"><span data-en="">Privacy</span><span data-de="">Datenschutz</span></button>
+    </span>
+  </footer>
+</section>
+
+<sc-if value="{{ legalOpen }}">
+  <div onClick="{{ closeLegal }}" style="position:fixed;inset:0;z-index:90;background:color-mix(in oklab, var(--ink) 45%, transparent);backdrop-filter:blur(6px);display:grid;place-items:center;padding:24px;animation:toastIn .3s ease">
+    <div onClick="{{ stopClick }}" style="position:relative;width:min(720px,100%);max-height:82vh;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:48px 52px">
+      <button onClick="{{ closeLegal }}" aria-label="Close" style="position:absolute;top:20px;right:20px;width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);cursor:pointer;transition:border-color .25s,transform .25s" style-hover="border-color:var(--accent);transform:rotate(90deg)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg>
+      </button>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)"><span data-en="">Legal notice</span><span data-de="">Rechtliches</span></span>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;letter-spacing:-.03em;margin:10px 0 28px">Impressum</h2>
+      <div style="display:flex;flex-direction:column;gap:22px;font-size:15px;line-height:1.7;color:var(--muted);max-width:62ch">
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Information pursuant to § 5 DDG</span><span data-de="">Angaben gemäß § 5 DDG</span></strong>
+        <p style="margin:0">W. M. Grubek<br>Wileystr. 1<br>89231 Neu-Ulm<br>Deutschland</p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Contact</span><span data-de="">Kontakt</span></strong>
+        <p style="margin:0"><span data-en="">Email</span><span data-de="">E-Mail</span>: contact@wiebkegrubek.de<br></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Responsible for content</span><span data-de="">Verantwortlich für den Inhalt</span></strong>
+        <p style="margin:0">W. M. Grubek, <span data-en="">address as above</span><span data-de="">Anschrift wie oben</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Liability for content</span><span data-de="">Haftung für Inhalte</span></strong>
+        <p style="margin:0"><span data-en="">This website's content has been created with the greatest possible care. However, no guarantee can be given for the accuracy, completeness, or timeliness of the content. As a service provider, I am responsible for my own content on these pages in accordance with general laws pursuant to § 7 (1) DDG. However, pursuant to §§ 8 to 10 DDG, I am not obligated as a service provider to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general law remain unaffected. However, liability in this regard is only possible from the point in time at which a specific infringement becomes known. Upon becoming aware of any such infringements, I will remove the relevant content immediately.</span><span data-de="">Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine Gewähr übernommen werden. Als Diensteanbieter bin ich gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG bin ich als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werde ich diese Inhalte umgehend entfernen.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Liability for links</span><span data-de="">Haftung für Links</span></strong>
+        <p style="margin:0"><span data-en="">This website may contain links to external third-party websites, the content of which I have no control over. Therefore, I cannot assume any liability for this external content. The respective provider or operator of the linked pages is always responsible for their content. The linked pages were checked for possible legal violations at the time of linking. No illegal content was identifiable at the time of linking. However, permanent monitoring of the content of linked pages is not reasonable without concrete evidence of a legal violation. Upon becoming aware of any legal violations, I will remove such links immediately.</span><span data-de="">Dieses Angebot enthält gegebenenfalls Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss habe. Deshalb kann ich für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werde ich derartige Links umgehend entfernen.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Copyright</span><span data-de="">Urheberrecht</span></strong>
+        <p style="margin:0"><span data-en="">The content and works created by me on these pages are subject to German copyright law. Duplication, processing, distribution, and any form of exploitation beyond the limits of copyright law require the written consent of the respective author or creator. Downloads and copies of this page are only permitted for private, non-commercial use. Insofar as the content on this page was not created by me, the copyrights of third parties are respected. In particular, third-party content is identified as such. Should you nevertheless become aware of a copyright infringement, please notify me accordingly. Upon becoming aware of any infringements, I will remove such content immediately.</span><span data-de="">Die durch mich erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht von mir erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitte ich um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werde ich derartige Inhalte umgehend entfernen.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">Image credits</span><span data-de="">Bildnachweise</span></strong>
+        <p style="margin:0">Alle Screenshots und Artworks stammen aus eigenen Projekten, sofern nicht anders gekennzeichnet. Die Screenshots aus Tears and Dust, Nexus sowie den Game-Jam Projekten entstanden im Rahmen von Studienprojekten in Zusammenarbeit mit den jeweiligen Teams.<br><br>All screenshots and artwork originate from my own projects unless otherwise indicated. The screenshots from Tears and Dust, Nexus, and the game jam projects were created as part of student team projects in collaboration with the respective teams.</p>
+      </div>
+      <div style="height:1px;background:var(--line);margin:36px 0 28px"></div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:600;letter-spacing:-.03em;margin:0 0 28px"><span data-en="">Privacy Policy</span><span data-de="">Datenschutzerklärung</span></h2>
+      <div style="display:flex;flex-direction:column;gap:22px;font-size:15px;line-height:1.7;color:var(--muted);max-width:62ch">
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">1. Controller</span><span data-de="">1. Verantwortlicher</span></strong>
+        <p style="margin:0"><span data-en="">The controller responsible for data processing on this website is:</span><span data-de="">Verantwortlich für die Datenverarbeitung auf dieser Website ist:</span></p>
+        <p style="margin:0">W. M. Grubek<br>Wileystr. 1<br>89231 Neu-Ulm<br>Deutschland<br><span data-en="">Email</span><span data-de="">E-Mail</span>: contact@wiebkegrubek.de</p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">2. Hosting via GitHub Pages</span><span data-de="">2. Hosting bei GitHub Pages</span></strong>
+        <p style="margin:0"><span data-en="">This website is hosted via GitHub Pages, a service provided by GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA (a subsidiary of Microsoft Corporation).</span><span data-de="">Diese Website wird über GitHub Pages gehostet, ein Angebot der GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA (ein Unternehmen der Microsoft Corporation).</span></p>
+        <p style="margin:0"><span data-en="">When you visit this website, GitHub automatically collects technical information in what are known as server log files, which your browser transmits. This typically includes:</span><span data-de="">Beim Aufruf dieser Website erhebt GitHub automatisch technische Informationen in sogenannten Server-Logfiles, die Ihr Browser übermittelt. Dazu gehören typischerweise:</span></p>
+        <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li><span data-en="">IP address of the accessing device</span><span data-de="">IP-Adresse des zugreifenden Geräts</span></li><li><span data-en="">Date and time of access</span><span data-de="">Datum und Uhrzeit des Zugriffs</span></li><li><span data-en="">File / URL accessed</span><span data-de="">aufgerufene Datei / URL</span></li><li><span data-en="">Referrer URL</span><span data-de="">Referrer-URL</span></li><li><span data-en="">Browser and operating system used</span><span data-de="">verwendeter Browser und Betriebssystem</span></li></ul>
+        <p style="margin:0"><span data-en="">This processing is carried out on the basis of Art. 6(1)(f) GDPR (legitimate interest in the technically error-free provision and delivery of the website). I do not combine this data with any other data sources.</span><span data-de="">Diese Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der technisch fehlerfreien Bereitstellung und Auslieferung der Website). Eine Zusammenführung dieser Daten mit anderen Datenquellen erfolgt durch mich nicht.</span></p>
+        <p style="margin:0"><span data-en="">Since GitHub Inc. is based in the USA, this data may be transferred to a third country outside the EU/EEA. GitHub states that it is certified under the EU-US Data Privacy Framework, which is intended to ensure an adequate level of data protection. For more information, please see GitHub’s privacy statement: <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener" style="color:var(--accent)">github privacy statement</a></span><span data-de="">Da GitHub Inc. in den USA sitzt, kann es zu einer Datenübertragung in ein Drittland außerhalb der EU/des EWR kommen. GitHub ist nach eigenen Angaben im Rahmen des EU-US Data Privacy Framework zertifiziert, wodurch ein angemessenes Datenschutzniveau sichergestellt werden soll. Weitere Informationen finden Sie in der Datenschutzerklärung von GitHub: <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener" style="color:var(--accent)">GitHub Privacy Statement</a></span></p>
+        <p style="margin:0"><span data-en="">I have no further influence over the type and scope of server log data collected by GitHub.</span><span data-de="">Ich habe auf Art und Umfang der von GitHub erhobenen Server-Logfiles keinen weitergehenden Einfluss.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">3. Fonts (Web Fonts)</span><span data-de="">3. Schriftarten (Web Fonts)</span></strong>
+        <p style="margin:0"><span data-en="">The fonts used on this website (Karla, Space Grotesk, JetBrains Mono) are hosted locally on this server. No connection is made to Google servers or any other third-party servers, and no data is transferred to third parties.</span><span data-de="">Die auf dieser Seite verwendeten Schriftarten (Karla, Space Grotesk, JetBrains Mono) werden lokal auf diesem Server eingebunden. Es findet keine Verbindung zu Servern von Google oder anderen Drittanbietern statt, und es werden keine Daten an Dritte übertragen.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">4. Local storage</span><span data-de="">4. Local Storage</span></strong>
+        <p style="margin:0"><span data-en="">This website stores your language setting, chosen theme, colour scheme, and achievement progress in your browser’s local storage.</span><span data-de="">Diese Website speichert Ihre Spracheinstellung, das gewählte Theme, das Farbschema sowie Ihren Fortschritt bei Achievements im lokalen Speicher (Local Storage) Ihres Browsers.</span></p>
+        <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li><span data-en="">This data remains exclusively on your device.</span><span data-de="">Diese Daten verbleiben ausschließlich auf Ihrem Gerät.</span></li><li><span data-en="">No cookies are set.</span><span data-de="">Es werden keine Cookies gesetzt.</span></li><li><span data-en="">No tracking takes place.</span><span data-de="">Es findet kein Tracking statt.</span></li><li><span data-en="">This data is not transmitted to me or to any third party.</span><span data-de="">Es erfolgt keine Übertragung dieser Daten an mich oder an Dritte.</span></li></ul>
+        <p style="margin:0"><span data-en="">The legal basis is Art. 6(1)(f) GDPR (legitimate interest in a user-friendly, functional design of the website). You can delete local storage at any time via your browser settings.</span><span data-de="">Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer nutzerfreundlichen, funktionalen Gestaltung der Website). Sie können den lokalen Speicher jederzeit über die Einstellungen Ihres Browsers löschen.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">5. Contact via email</span><span data-de="">5. Kontaktaufnahme per E-Mail</span></strong>
+        <p style="margin:0"><span data-en="">If you contact me by email, the information you provide (email address, and, if applicable, name and message) will be stored by me for the purpose of processing your inquiry and in case of follow-up questions. The legal basis for this is Art. 6(1)(f) GDPR (legitimate interest in responding to your inquiry) or, if the inquiry is aimed at concluding a contract, Art. 6(1)(b) GDPR. I do not pass on this data without your consent.</span><span data-de="">Wenn Sie mich per E-Mail kontaktieren, werden Ihre Angaben (E-Mail-Adresse, ggf. Name und Nachricht) zum Zweck der Bearbeitung Ihrer Anfrage sowie für den Fall von Anschlussfragen bei mir gespeichert. Rechtsgrundlage hierfür ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung Ihrer Anfrage) bzw., sofern die Anfrage auf den Abschluss eines Vertrages abzielt, Art. 6 Abs. 1 lit. b DSGVO. Diese Daten gebe ich nicht ohne Ihre Einwilligung weiter.</span></p>
+        <strong style="display:block;color:var(--ink);font-weight:600;margin:14px 0 -8px"><span data-en="">6. Your rights as a data subject</span><span data-de="">6. Ihre Rechte als betroffene Person</span></strong>
+        <p style="margin:0"><span data-en="">Under the applicable legal provisions, you have the right at any time to:</span><span data-de="">Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf:</span></p>
+        <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li><span data-en="">Access (Art. 15 GDPR) information about your personal data processed by me</span><span data-de="">Auskunft (Art. 15 DSGVO) über Ihre von mir verarbeiteten personenbezogenen Daten</span></li><li><span data-en="">Rectification (Art. 16 GDPR) of inaccurate data</span><span data-de="">Berichtigung (Art. 16 DSGVO) unrichtiger Daten</span></li><li><span data-en="">Erasure (Art. 17 GDPR) of data stored by me</span><span data-de="">Löschung (Art. 17 DSGVO) Ihrer bei mir gespeicherten Daten</span></li><li><span data-en="">Restriction of processing (Art. 18 GDPR)</span><span data-de="">Einschränkung der Verarbeitung (Art. 18 DSGVO)</span></li><li><span data-en="">Object (Art. 21 GDPR) to processing</span><span data-de="">Widerspruch (Art. 21 DSGVO) gegen die Verarbeitung</span></li><li><span data-en="">Data portability (Art. 20 GDPR)</span><span data-de="">Datenübertragbarkeit (Art. 20 DSGVO)</span></li></ul>
+        <p style="margin:0"><span data-en="">You also have the right to lodge a complaint with a data protection supervisory authority regarding my processing of your personal data. The competent authority is generally the supervisory authority of the German federal state in which I reside.</span><span data-de="">Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch mich zu beschweren. Zuständig ist in der Regel die Aufsichtsbehörde des Bundeslandes, in dem ich meinen Wohnsitz habe.</span></p>
+        <p style="margin:0"><span data-en="">If you have any questions regarding data protection, you are welcome to contact me at any time using the email address given above.</span><span data-de="">Bei Fragen zum Datenschutz können Sie sich jederzeit unter der oben genannten E-Mail-Adresse an mich wenden.</span></p>
+        <div style="font-size:13px;opacity:.8"><span data-en="">Last updated</span><span data-de="">Stand</span>: September 2026</div>
+        <p style="margin:0;font-size:13px;opacity:.8" data-en=""><em>Note: This is a translation of the German-language Impressum and Datenschutzerklärung provided for the convenience of English-speaking visitors. The German version is the legally binding original, as this is a German website governed by German law.</em></p>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:5vmin;background:rgba(20,20,20,.88);backdrop-filter:blur(6px);cursor:zoom-out;animation:fadeIn .2s ease">
+    <img src="{{ lightboxSrc }}" alt="" style="max-width:{{ lightboxMaxW }};max-height:{{ lightboxMaxH }};object-fit:contain;display:block;border-radius:8px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7)">
+    <button onClick="{{ closeLightbox }}" aria-label="Close" style="position:fixed;top:24px;right:24px;width:44px;height:44px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:background .2s" style-hover="background:rgba(255,255,255,.2)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+    </button>
+  </div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultScheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Lilac&quot;,&quot;options&quot;:[&quot;Lilac&quot;,&quot;Sea glass&quot;,&quot;Apricot&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;startDark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;defaultLang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;en&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;de&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+class Component extends DCLogic {
+  static BIG = ['nexus-shot-2', 'sk-6-moodpainting', 'sk-7-bootstrap', 'sk-8-vogglenauts'];
+  static SCHEMES = [
+    { name: 'Lilac', h: 292, b: [300, 265, 340, 285, 320, 250] },
+    { name: 'Sea glass', h: 195, b: [190, 215, 165, 200, 150, 230] },
+    { name: 'Apricot', h: 45, b: [45, 25, 70, 15, 60, 90] }
+  ];
+  static ACH = [
+    { id: 'bubble', en: 'Popped your first bubble', de: 'Erste Blase zerplatzt' },
+    { id: 'awards', en: 'Rare item: shiny trophy', de: 'Seltener Gegenstand: Trophäe' },
+    { id: 'film', en: 'Found the film era', de: 'Die Film-Ära entdeckt' },
+    { id: 'contact', en: '100% completion', de: '100 % abgeschlossen', finale: true }
+  ];
+  state = { lang: null, dark: null, td: 0, pal: false, scheme: 0, toasts: [], legal: false };
+
+  get lang() { return this.state.lang ?? (this.props.defaultLang || 'en'); }
+
+  componentDidMount() {
+    const root = document.documentElement;
+    const savedT = localStorage.getItem('pf-theme');
+    const savedL = localStorage.getItem('pf-lang');
+    if (savedT) this.setState({ dark: savedT === 'dark' });
+    if (savedL) this.setState({ lang: savedL });
+    root.dataset.theme = (savedT || (this.props.startDark ? 'dark' : 'light'));
+    root.dataset.lang = savedL || this.props.defaultLang || 'en';
+    const stored = localStorage.getItem('pf-scheme');
+    const fromProp = Math.max(0, Component.SCHEMES.findIndex(s => s.name === this.props.defaultScheme));
+    const savedS = stored === null ? fromProp : (parseInt(stored, 10) || 0);
+    this.applyScheme(savedS);
+    if (savedS) this.setState({ scheme: savedS });
+
+    this.initBubbleDrift();
+    this.onMove = (e) => {
+      if (this.hintEl) {
+        const h = e.target.closest && e.target.closest('[data-cursor]');
+        this.hintEl.style.transform = `translate(${e.clientX}px, ${e.clientY - 34}px) translate(-50%,-50%) scale(${h ? 1 : .6})`;
+        this.hintEl.style.opacity = h ? '1' : '0';
+        if (h) {
+          const de = document.documentElement.dataset.lang === 'de';
+          const txt = (de && h.dataset.cursorDe) || h.dataset.cursor;
+          if (this.hintEl.textContent !== txt) this.hintEl.textContent = txt;
+        }
+      }
+      const t = e.target.closest && e.target.closest('[data-magnet]');
+      if (t) {
+        const r = t.getBoundingClientRect();
+        t.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px, ${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
+        if (this.lastMagnet && this.lastMagnet !== t) this.lastMagnet.style.transform = '';
+        this.lastMagnet = t;
+      } else if (this.lastMagnet) { this.lastMagnet.style.transform = ''; this.lastMagnet = null; }
+    };
+    window.addEventListener('pointermove', this.onMove, { passive: true });
+
+    this.onTilt = (e) => {
+      const el = e.currentTarget, r = el.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -4;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 4;
+      el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-3px)`;
+    };
+    this.offTilt = (e) => { e.currentTarget.style.transform = ''; };
+    this.tilts = Array.from(document.querySelectorAll('[data-tilt]'));
+    this.tilts.forEach(el => { el.addEventListener('pointermove', this.onTilt); el.addEventListener('pointerleave', this.offTilt); });
+
+    this.initAchievements();
+    this.initBubblePop();
+    this.initDrag();
+    this.onEsc = e => { if (e.key === 'Escape' && this.state.lightbox) this.setState({ lightbox: null }); };
+    window.addEventListener('keydown', this.onEsc);
+
+    this.io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.setAttribute('data-reveal', 'in'); this.io.unobserve(en.target); } }), { threshold: 0.12 });
+    document.querySelectorAll('[data-reveal]').forEach((el, i) => { el.style.transitionDelay = (i % 4) * 60 + 'ms'; this.io.observe(el); });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('pointermove', this.onMove);
+    if (this.io) this.io.disconnect();
+    if (this.achIO) this.achIO.disconnect();
+    if (this.achFinaleIO) this.achFinaleIO.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.onKey) window.removeEventListener('keydown', this.onKey);
+    if (this.tilts) this.tilts.forEach(el => { el.removeEventListener('pointermove', this.onTilt); el.removeEventListener('pointerleave', this.offTilt); });
+  }
+
+  initAchievements() {
+    const list = Component.ACH;
+    let done;
+    const KEY = 'pf-ach-v2';
+    try { done = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { done = []; }
+    window.resetAchievements = () => { localStorage.removeItem(KEY); location.reload(); };
+    this.unlock = (id) => {
+      const a = list.find(x => x.id === id);
+      if (!a || done.includes(id)) return;
+      done.push(id);
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+      const t = { key: id + Date.now(), en: a.en, de: a.de };
+      this.setState(s => ({ toasts: [...s.toasts, t] }));
+      setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(x => x.key !== t.key) })), 5200);
+      if (a.finale) this.confetti();
+    };
+    this.achIO = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        const a = list.find(x => x.id === en.target.id);
+        this.achIO.unobserve(en.target);
+        if (!a || done.includes(a.id)) return;
+        done.push(a.id);
+        localStorage.setItem(KEY, JSON.stringify(done));
+        const t = { key: a.id + Date.now(), en: a.en, de: a.de };
+        this.setState(s => ({ toasts: [...s.toasts, t] }));
+        setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(x => x.key !== t.key) })), 5200);
+        if (a.finale) this.confetti();
+      });
+    }, { threshold: 0.22 });
+    // finale unlocks much later: contact card nearly fully in view
+    this.achFinaleIO = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        const a = list.find(x => x.id === en.target.dataset.ach);
+        this.achFinaleIO.unobserve(en.target);
+        if (!a || done.includes(a.id)) return;
+        done.push(a.id);
+        try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+        const t = { key: a.id + Date.now(), en: a.en, de: a.de };
+        this.setState(s => ({ toasts: [...s.toasts, t] }));
+        setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(x => x.key !== t.key) })), 5200);
+        if (a.finale) this.confetti();
+      });
+    }, { threshold: 0, rootMargin: '-55% 0px 0px 0px' });
+    list.forEach(a => {
+      const el = document.getElementById(a.id);
+      if (!el) return;
+      if (a.finale) { el.dataset.ach = a.id; this.achFinaleIO.observe(el); }
+      else this.achIO.observe(el);
+    });
+
+    const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let step = 0;
+    this.onKey = (e) => {
+      step = (e.key === code[step] || e.key.toLowerCase() === code[step]) ? step + 1 : 0;
+      if (e.key === 'Escape' && this.state.legal) { document.body.style.overflow = ''; this.setState({ legal: false }); }
+      if (step === code.length) { step = 0; window.resetAchievements(); }
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+
+  confetti() {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden';
+    document.body.appendChild(wrap);
+    const hues = [
+      getComputedStyle(document.documentElement).getPropertyValue('--h1'),
+      getComputedStyle(document.documentElement).getPropertyValue('--h3'),
+      getComputedStyle(document.documentElement).getPropertyValue('--h6'),
+      getComputedStyle(document.documentElement).getPropertyValue('--h')
+    ];
+    for (let i = 0; i < 90; i++) {
+      const p = document.createElement('span');
+      const size = 6 + Math.random() * 8;
+      p.style.cssText = `position:absolute;left:${20 + Math.random() * 60}%;top:${60 + Math.random() * 20}%;width:${size}px;height:${size * (Math.random() < .4 ? 1 : .45)}px;border-radius:${Math.random() < .4 ? '50%' : '2px'};background:oklch(0.72 0.15 ${(hues[i % 4] || 292).toString().trim()})`;
+      wrap.appendChild(p);
+      const dx = (Math.random() - 0.5) * 900, dy = -(250 + Math.random() * 520);
+      p.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx * 0.6}px, ${dy}px) rotate(${Math.random() * 540}deg)`, opacity: 1, offset: 0.45 },
+        { transform: `translate(${dx}px, ${300 + Math.random() * 200}px) rotate(${Math.random() * 900}deg)`, opacity: 0 }
+      ], { duration: 2200 + Math.random() * 1400, easing: 'cubic-bezier(.15,.6,.4,1)', fill: 'forwards' });
+    }
+    setTimeout(() => wrap.remove(), 4200);
+  }
+
+  initBubbleDrift() {
+    if (!this.layerEl) return;
+    const wraps = Array.from(this.layerEl.querySelectorAll('[data-bub]'));
+    this.drift = wraps.map((el, i) => {
+      const size = el.firstElementChild.getBoundingClientRect().width || 100;
+      const a = (i / wraps.length) * Math.PI * 2 + Math.random();
+      const sp = 0.22 + Math.random() * 0.26;
+      return {
+        el, size,
+        x: Math.random() * Math.max(1, innerWidth - size),
+        y: Math.random() * Math.max(1, innerHeight - size),
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp
+      };
+    });
+    const tick = () => {
+      const W = innerWidth, H = innerHeight;
+      this.drift.forEach(b => {
+        if (b.el.firstElementChild.dataset.popped) return;
+        b.x += b.vx; b.y += b.vy;
+        if (b.x <= 0) { b.x = 0; b.vx = Math.abs(b.vx); }
+        if (b.x >= W - b.size) { b.x = W - b.size; b.vx = -Math.abs(b.vx); }
+        if (b.y <= 0) { b.y = 0; b.vy = Math.abs(b.vy); }
+        if (b.y >= H - b.size) { b.y = H - b.size; b.vy = -Math.abs(b.vy); }
+        b.el.style.transform = `translate(${b.x}px, ${b.y}px)`;
+      });
+      this.raf = requestAnimationFrame(tick);
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+
+  initBubblePop() {
+    if (!this.layerEl) return;
+    const hit = (e) => {
+      if (e.target.closest('a,button,input,textarea,[data-cursor],[data-drag]')) return null;
+      let found = null;
+      (this.drift || []).forEach(d => {
+        const r = d.size / 2, cx = d.x + r, cy = d.y + r;
+        if (Math.hypot(e.clientX - cx, e.clientY - cy) <= r) found = d.el.firstElementChild;
+      });
+      return found;
+    };
+    window.addEventListener('pointermove', (e) => {
+      const b = hit(e);
+      if (b !== this.hoverBub) {
+        this.hoverBub = b;
+        document.body.style.cursor = b && !b.dataset.popped ? 'pointer' : '';
+      }
+    }, { passive: true });
+    window.addEventListener('click', (e) => {
+      const b = hit(e);
+      if (b) this.pop(b);
+    });
+  }
+
+  pop(b) {
+    {
+      {
+        if (b.dataset.popped) return;
+        b.dataset.popped = '1';
+        if (this.unlock) this.unlock('bubble');
+        const r = b.getBoundingClientRect();
+        const ring = document.createElement('div');
+        ring.style.cssText = `position:fixed;left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px;width:${r.width}px;height:${r.width}px;margin:${-r.width / 2}px 0 0 ${-r.width / 2}px;border-radius:50%;border:2px solid var(--accent);pointer-events:none;z-index:2`;
+        document.body.appendChild(ring);
+        ring.animate([{ transform: 'scale(.9)', opacity: .8 }, { transform: 'scale(1.9)', opacity: 0 }], { duration: 520, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+        setTimeout(() => ring.remove(), 560);
+        for (let i = 0; i < 8; i++) {
+          const d = document.createElement('span');
+          const s = 4 + Math.random() * 5;
+          d.style.cssText = `position:fixed;left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px;width:${s}px;height:${s}px;border-radius:50%;background:var(--accent);opacity:.7;pointer-events:none;z-index:2`;
+          document.body.appendChild(d);
+          const ang = (i / 8) * Math.PI * 2, dist = r.width * (0.5 + Math.random() * 0.5);
+          d.animate([{ transform: 'translate(0,0)', opacity: .7 }, { transform: `translate(${Math.cos(ang) * dist}px, ${Math.sin(ang) * dist}px)`, opacity: 0 }], { duration: 620, easing: 'cubic-bezier(.1,.7,.3,1)', fill: 'forwards' });
+          setTimeout(() => d.remove(), 660);
+        }
+        b.style.transition = 'transform .28s cubic-bezier(.3,1.4,.5,1), opacity .28s';
+        b.style.transform = 'scale(1.35)';
+        b.style.opacity = '0';
+        setTimeout(() => {
+          b.style.transform = 'scale(0)';
+          requestAnimationFrame(() => {
+            b.style.transition = 'transform 1.1s cubic-bezier(.2,1.3,.4,1), opacity .8s';
+            b.style.opacity = '1';
+            b.style.transform = '';
+            delete b.dataset.popped;
+          });
+        }, 2200);
+      }
+    }
+  }
+
+  initDrag() {
+    const el = document.querySelector('[data-drag]');
+    if (!el) return;
+    let x0 = null;
+    el.addEventListener('pointerdown', e => { x0 = e.clientX; el.style.cursor = 'grabbing'; });
+    const end = (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0; x0 = null; el.style.cursor = 'grab';
+      if (Math.abs(dx) > 55) this.setState(s => ({ td: (s.td + (dx < 0 ? 1 : 3)) % 4 }));
+    };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointerleave', end);
+  }
+
+  applyScheme(k) {
+    const s = Component.SCHEMES[k] || Component.SCHEMES[0];
+    const r = document.documentElement.style;
+    r.setProperty('--h', s.h);
+    s.b.forEach((h, i) => r.setProperty('--h' + (i + 1), h));
+    localStorage.setItem('pf-scheme', k);
+  }
+
+  renderVals() {
+    const n = 5, i = this.state.td;
+    const open = !!this.state.pal;
+    const active = this.state.scheme ?? 0;
+    return {
+      legalOpen: !!this.state.legal,
+      openLegal: () => { document.body.style.overflow = 'hidden'; this.setState({ legal: true }); },
+      closeLegal: () => { document.body.style.overflow = ''; this.setState({ legal: false }); },
+      stopClick: (e) => e.stopPropagation(),
+      togglePalette: () => this.setState(s => ({ pal: !s.pal })),
+      paletteOpacity: open ? 1 : 0,
+      paletteShift: open ? 'translateY(0) scale(1)' : 'translateY(14px) scale(.85)',
+      palettePointer: open ? 'auto' : 'none',
+      schemes: Component.SCHEMES.map((s, k) => ({
+        name: s.name,
+        dot: `linear-gradient(135deg, oklch(0.70 0.14 ${s.h}), oklch(0.74 0.12 ${s.b[2]}))`,
+        ring: k === active ? 'var(--ink)' : 'var(--line)',
+        pick: () => { this.applyScheme(k); this.setState({ scheme: k }); }
+      })),
+      bubbleLayer: (el) => { this.layerEl = el; },
+      cursorHint: (el) => { this.hintEl = el; },
+      toastLayer: (el) => { this.toastEl = el; },
+      toasts: this.state.toasts,
+      exStrip: (el) => { this.stripEl = el; },
+      exPrev: () => { if (this.stripEl) this.stripEl.scrollBy({ left: -520, behavior: 'smooth' }); },
+      exNext: () => { if (this.stripEl) this.stripEl.scrollBy({ left: 520, behavior: 'smooth' }); },
+      toggleTheme: () => {
+        const dark = !(document.documentElement.dataset.theme === 'dark');
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        localStorage.setItem('pf-theme', dark ? 'dark' : 'light');
+        this.setState({ dark });
+      },
+      toggleLang: () => {
+        const next = document.documentElement.dataset.lang === 'de' ? 'en' : 'de';
+        document.documentElement.dataset.lang = next;
+        localStorage.setItem('pf-lang', next);
+        this.setState({ lang: next });
+      },
+      lightboxOpen: !!this.state.lightbox,
+      lightboxSrc: this.state.lightbox || '',
+      lightboxMaxW: Component.BIG.some(k => (this.state.lightbox || '').includes(k)) ? 'min(100%, 900px)' : '100%',
+      lightboxMaxH: Component.BIG.some(k => (this.state.lightbox || '').includes(k)) ? '68vh' : '100%',
+      closeLightbox: () => this.setState({ lightbox: null }),
+      openSk1: () => this.setState({ lightbox: './images/sk-1-flappy.gif' }),
+      openSk2: () => this.setState({ lightbox: './images/sk-2-topdown.gif' }),
+      openSk3: () => this.setState({ lightbox: './images/sk-3-pegasus.gif' }),
+      openSk4: () => this.setState({ lightbox: './images/sk-4-spritesheet.png' }),
+      openSk5: () => this.setState({ lightbox: './images/sk-5-conceptart.png' }),
+      openSk6: () => this.setState({ lightbox: './images/sk-6-moodpainting.png' }),
+      openSk7: () => this.setState({ lightbox: './images/sk-7-bootstrap.jpg' }),
+      openSk8: () => this.setState({ lightbox: './images/sk-8-vogglenauts.png' }),
+      openSk9: () => this.setState({ lightbox: './images/sk-9-strategy.png' }),
+      openCert1: () => this.setState({ lightbox: './images/cert-kickstart.png' }),
+      openCert2: () => this.setState({ lightbox: './images/cert-mb21.jpg' }),
+      openShot1: () => this.setState({ lightbox: './images/nexus-shot-1.png' }),
+      openShot2: () => this.setState({ lightbox: './images/nexus-shot-2.gif' }),
+      openShot3: () => this.setState({ lightbox: './images/nexus-shot-3.jpg' }),
+      tdShift: `translateX(-${i * 100}%)`,
+      tdPrev: () => this.setState(s => ({ td: (s.td + n - 1) % n })),
+      tdNext: () => this.setState(s => ({ td: (s.td + 1) % n })),
+      tdDots: Array.from({ length: n }, (_, k) => ({
+        bg: k === i ? 'var(--accent)' : 'color-mix(in oklab, var(--muted) 40%, transparent)',
+        go: () => this.setState({ td: k })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
